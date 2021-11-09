@@ -59,7 +59,7 @@ async def GetExpectedCost(page):
     await classic_window.fill("input.numeric:nth-child(7)","2021")
     await classic_window.fill("input.numeric:nth-child(9)","11")
     await classic_window.fill("input.numeric:nth-child(10)","30")
-    #フィルターの区分も
+    
     await classic_window.check("input[name='id_progress_status_list'][value='1']")
     await classic_window.check("input[name='id_progress_status_list'][value='2']")
     async with page.expect_download() as download_info:
@@ -69,6 +69,22 @@ async def GetExpectedCost(page):
     await download.save_as(path)
     ChangeFileEncode(path)
     #ここでファイルが存在するかのチェックを行う
+async def GetMatterCSV(page):
+    window = page.main_frame
+    await window.click('a[href="/noar_test/b/output"]')
+    await window.click(":nth-match(a:has-text('案件CSV出力'),2)")
+    classic_window = await (await window.query_selector("#classic_window")).content_frame()
+    await classic_window.select_option("select[name='id_type_date']",value="19")
+    await classic_window.fill("input.numeric:nth-child(2)","2021")
+    await classic_window.fill("input.numeric:nth-child(4)","11")
+    await classic_window.check("input[name='id_progress_status_list'][value='1']")
+    await classic_window.check("input[name='id_progress_status_list'][value='2']")
+    async with page.expect_download() as download_info:
+        await classic_window.click("input.btn_red[name='output']", force=True)
+    download = await download_info.value
+    path = download.suggested_filename
+    await download.save_as(path)
+    ChangeFileEncode(path)
     
 async def main():
     USERNAME = "hisadakn"
@@ -80,6 +96,7 @@ async def main():
         await ZAC_login(page,USERNAME,PASSWORD)
         await GETCASTING(page)
         await GetExpectedCost(page)
+        await GetMatterCSV(page)
         await browser.close()
 
 asyncio.run(main())
