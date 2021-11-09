@@ -1,6 +1,23 @@
 from playwright.async_api import async_playwright
 import time 
 import asyncio
+import codecs
+import os
+def ChangeFileEncode(Filepath):
+    """
+    エンコーディングの変更
+    Shift_JISからUTF-8(BOM)へ
+    """
+    fin = codecs.open(Filepath,"r",encoding="shift_jis")
+    temp = "temp.csv"
+    fout = codecs.open(temp,"w",encoding="utf_8_sig")
+    for row in fin:
+        fout.write(row)
+    fin.close()
+    fout.close()
+    os.remove(Filepath)
+    os.rename(temp,Filepath)
+    
 async def ZAC_login(page,USERNAME,PASSWORD):
     await page.goto("https://noar.zac.ai/noar_test/User/user_logon.asp")
     await page.fill('#username',USERNAME)
@@ -22,8 +39,9 @@ async def GETCASTING(page):
     download = await download_info.value
     path = download.suggested_filename
     await download.save_as(path)
+    ChangeFileEncode(path)
     #ここでファイルが存在するかのチェックを行う
-    
+
 async def GetExpectedCost(page):
     """
     予定原価の出力
@@ -49,6 +67,7 @@ async def GetExpectedCost(page):
     download = await download_info.value
     path = download.suggested_filename
     await download.save_as(path)
+    ChangeFileEncode(path)
     #ここでファイルが存在するかのチェックを行う
     
 async def main():
