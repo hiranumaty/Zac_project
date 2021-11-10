@@ -1,8 +1,25 @@
 from playwright.async_api import async_playwright
+from glob import glob
 import time 
 import asyncio
 import codecs
 import os
+import datetime
+def FileCheck(path):
+    #自作のエクセプションを投げるようにしたい
+    today = datetime.date.today()
+    if os.path.exists(path):
+        modify_datestamp = datetime.datetime.fromtimestamp(os.path.getmtime(path))
+        modify_date = modify_datestamp.date()
+        if modify_date == today:
+            if not glob("\.crdownload$"):
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
 def ChangeFileEncode(Filepath):
     """
     エンコーディングの変更
@@ -40,6 +57,7 @@ async def GETCASTING(page):
     path = download.suggested_filename
     await download.save_as(path)
     ChangeFileEncode(path)
+    FileCheck(path)
     #ここでファイルが存在するかのチェックを行う
 
 async def GetExpectedCost(page):
@@ -68,6 +86,7 @@ async def GetExpectedCost(page):
     path = download.suggested_filename
     await download.save_as(path)
     ChangeFileEncode(path)
+    FileCheck(path)
     #ここでファイルが存在するかのチェックを行う
 async def GetMatterCSV(page):
     window = page.main_frame
@@ -85,6 +104,7 @@ async def GetMatterCSV(page):
     path = download.suggested_filename
     await download.save_as(path)
     ChangeFileEncode(path)
+    FileCheck(path)
     
 async def main():
     USERNAME = "hisadakn"
