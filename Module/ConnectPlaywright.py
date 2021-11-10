@@ -37,14 +37,11 @@ def ChangeFileEncode(Filepath):
 
 
 class ConnectZac(object):
-    def __init__(self):
-        self.page =None
-        self.browser = None
     async def __aenter__(self):
-        self.page=None
-        async with async_playwright() as p:
-            self.browser = await p.chromium.launch(headless=False)
-        
+        pass
+    def __init__(self,browser):
+        self.page =None
+        self.browser = browser
     async def Login(self,USERNAME,PASSWORD):
         context = await self.browser.new_context(accept_downloads=True)
         self.page = await context.new_page()
