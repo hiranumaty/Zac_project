@@ -13,10 +13,10 @@ async def main():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False)
         Connection = ConnectPlaywright.ConnectZac(browser)
-        async with Connection as C:
-            await C.Login(USERNAME,PASSWORD)
-            await C.GETCASTING()
-            await C.GetExpectedCost()
-            await C.GetMatterCSV()
+        await Connection.Login(USERNAME,PASSWORD)
+        await Connection.GETCASTING()
+        await Connection.GetExpectedCost()
+        await Connection.GetMatterCSV()
+        await Connection.logout()
         
 asyncio.run(main())

@@ -34,14 +34,14 @@ def ChangeFileEncode(Filepath):
     fin.close()
     fout.close()
     os.remove(Filepath)
+    os.rename(temp,Filepath)
 
 
 class ConnectZac(object):
-    async def __aenter__(self):
-        pass
     def __init__(self,browser):
         self.page =None
         self.browser = browser
+        
     async def Login(self,USERNAME,PASSWORD):
         context = await self.browser.new_context(accept_downloads=True)
         self.page = await context.new_page()
@@ -66,7 +66,7 @@ class ConnectZac(object):
         FileCheck(path)
     
     async def GetExpectedCost(self):
-        window = page.main_frame
+        window = self.page.main_frame
         await window.click('a[href="/noar_test/b/output"]')
         await window.click(":nth-match(a:has-text('予定原価CSV出力'),2)")
         classic_window = await (await window.query_selector("#classic_window")).content_frame()
@@ -107,6 +107,3 @@ class ConnectZac(object):
         FileCheck(path)
     async def logout(self):
         await self.browser.close()
-        
-    async def __aexit__(self,exc_type,exc,tb):
-        await self.logout()
