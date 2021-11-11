@@ -5,10 +5,14 @@ import asyncio
 import codecs
 import os
 import datetime
+import re
 
 class MakeFileException(Exception):
     pass
-            
+
+class DatingException(Exception):
+    pass
+
 def FileCheck(path):
     """
     ファイルが存在するか
@@ -51,6 +55,10 @@ class ConnectZac(object):
         self.browser = browser
         self.first_date = first_date
         self.last_date = last_date
+        pattern = r'\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])'
+        if not (re.match(pattern,str(self.first_date)) and re.match(pattern,str(self.first_date))):
+            raise DatingException("日付の書式が間違っています正しくはYYYY-MM-DDです")
+        
         
     async def Login(self,USERNAME,PASSWORD):
         context = await self.browser.new_context(accept_downloads=True)

@@ -18,17 +18,17 @@ async def main():
         
         first_date = today - datetime.timedelta(days=today.day - 1)
         last_date = datetime.date(t_year,t_month,last_date_ofMonth)
-        Connection = ConnectPlaywright.ConnectZac(browser,first_date,last_date)
         try:
+            Connection = ConnectPlaywright.ConnectZac(browser,first_date,last_date)
             await Connection.Login(USERNAME,PASSWORD)
             #現在日時を取得してそれを以下の3つに引数として与える
             await Connection.GetCastingIchiranCSV()
             await Connection.GetYoteiGenka()
             await Connection.GetAnkenCSV()
-        except ConnectPlaywright.MakeFileException as e:
+        except (ConnectPlaywright.DatingException,ConnectPlaywright.MakeFileException) as e:
             error_msg = traceback.format_exception_only(type(e), e)
             print(error_msg)
             print("エラーが発生したため動作を終了しました")
-        finally:
+        else:
             await Connection.logout()
 asyncio.run(main())
