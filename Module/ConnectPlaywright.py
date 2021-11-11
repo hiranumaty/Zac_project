@@ -67,11 +67,10 @@ class ConnectZac(object):
         await window.click('a[href="/noar_test/b/output"]')
         await window.click(":nth-match(a:has-text('キャスティング一覧'),2)")
         classic_window = await (await window.query_selector("#classic_window")).content_frame()
-        #ここを開始日と終了日を入力させるようにする(6桁)
-        await classic_window.fill("input[name='y_date_start']","2021")
-        await classic_window.fill("input[name='m_date_start']","11")
-        await classic_window.fill("input[name='y_date_end']","2021")
-        await classic_window.fill("input[name='m_date_end']","12")
+        await classic_window.fill("input[name='y_date_start']",str(self.first_date.year))
+        await classic_window.fill("input[name='m_date_start']",str(self.first_date.month))
+        await classic_window.fill("input[name='y_date_end']",str(self.last_date.year))
+        await classic_window.fill("input[name='m_date_end']",str(self.last_date.month))
         async with self.page.expect_download() as download_info:
             await classic_window.click("input.btn_red[name='CSV']", force=True)
         download = await download_info.value
@@ -79,7 +78,6 @@ class ConnectZac(object):
         await download.save_as(path)
         ChangeFileEncode(path)
         FileCheck(path)
-        time.sleep(5)
     
     async def GetYoteiGenka(self):
         window = self.page.main_frame
@@ -87,13 +85,12 @@ class ConnectZac(object):
         await window.click(":nth-match(a:has-text('予定原価CSV出力'),2)")
         classic_window = await (await window.query_selector("#classic_window")).content_frame()
         await classic_window.select_option("select[name='date_type']",value="4")
-        #ここを開始日と終了日で適用する(8桁)
-        await classic_window.fill("input[name='y_date_start']","2021")
-        await classic_window.fill("input[name='m_date_start']","11")
-        await classic_window.fill("input[name='d_date_start']","1")
-        await classic_window.fill("input[name='y_date_end']","2021")
-        await classic_window.fill("input[name='m_date_end']","11")
-        await classic_window.fill("input[name='d_date_end']","30")
+        await classic_window.fill("input[name='y_date_start']",str(self.first_date.year))
+        await classic_window.fill("input[name='m_date_start']",str(self.first_date.month))
+        await classic_window.fill("input[name='d_date_start']",str(self.first_date.day))
+        await classic_window.fill("input[name='y_date_end']",str(self.last_date.year))
+        await classic_window.fill("input[name='m_date_end']",str(self.last_date.month))
+        await classic_window.fill("input[name='d_date_end']",str(self.last_date.day))
         await classic_window.check("input[name='id_progress_status_list'][value='1']")
         await classic_window.check("input[name='id_progress_status_list'][value='2']")
         async with self.page.expect_download() as download_info:
@@ -103,19 +100,17 @@ class ConnectZac(object):
         await download.save_as(path)
         ChangeFileEncode(path)
         FileCheck(path)
-        time.sleep(5)
-    
+        
     async def GetAnkenCSV(self):
         window = self.page.main_frame
         await window.click('a[href="/noar_test/b/output"]')
         await window.click(":nth-match(a:has-text('案件CSV出力'),2)")
         classic_window = await (await window.query_selector("#classic_window")).content_frame()
         await classic_window.select_option("select[name='id_type_date']",value="19")
-        #ここを開始日と終了日で適用する(6桁)
-        await classic_window.fill("input[name='y_start']","2021")
-        await classic_window.fill("input[name='m_start']","11")
-        await classic_window.fill("input[name='y_end']","2021")
-        await classic_window.fill("input[name='m_end']","12")
+        await classic_window.fill("input[name='y_start']",str(self.first_date.year))
+        await classic_window.fill("input[name='m_start']",str(self.first_date.month))
+        await classic_window.fill("input[name='y_end']",str(self.last_date.year))
+        await classic_window.fill("input[name='m_end']",str(self.last_date.month))
         await classic_window.check("input[name='id_progress_status_list'][value='1']")
         await classic_window.check("input[name='id_progress_status_list'][value='2']")
         async with self.page.expect_download() as download_info:
@@ -125,7 +120,6 @@ class ConnectZac(object):
         await download.save_as(path)
         ChangeFileEncode(path)
         FileCheck(path)
-        time.sleep(5)
         
     async def logout(self):
         await self.browser.close()
