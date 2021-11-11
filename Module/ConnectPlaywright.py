@@ -5,8 +5,15 @@ import asyncio
 import codecs
 import os
 import datetime
+
+class MakeFileException(Exception):
+    pass
+            
 def FileCheck(path):
-    #自作のエクセプションを投げるようにしたい
+    """
+    ファイルが存在するか
+    一時ファイル(*.crdownload)が存在しないか
+    """
     today = datetime.date.today()
     if os.path.exists(path):
         modify_datestamp = datetime.datetime.fromtimestamp(os.path.getmtime(path))
@@ -15,11 +22,11 @@ def FileCheck(path):
             if not glob("\.crdownload$"):
                 return True
             else:
-                return False
+                raise MakeFileException("一時ファイルが残っています")
         else:
-            return False
+            raise MakeFileException("ファイルの更新に失敗しました")
     else:
-        return False
+        raise MakeFileException("ファイルの作成に失敗しました")
 
 def ChangeFileEncode(Filepath):
     """
@@ -36,6 +43,7 @@ def ChangeFileEncode(Filepath):
     os.remove(Filepath)
     os.rename(temp,Filepath)
 
+ 
 
 class ConnectZac(object):
     def __init__(self,browser):
