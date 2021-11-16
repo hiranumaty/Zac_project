@@ -117,8 +117,6 @@ class ConnectZac(object):
         await classic_window.select_option("select[name='id_type_date']",value="19")
         await classic_window.fill("input[name='y_start']",str(self.first_date.year))
         await classic_window.fill("input[name='m_start']",str(self.first_date.month))
-        await classic_window.fill("input[name='y_end']",str(self.last_date.year))
-        await classic_window.fill("input[name='m_end']",str(self.last_date.month))
         await classic_window.check("input[name='id_progress_status_list'][value='1']")
         await classic_window.check("input[name='id_progress_status_list'][value='2']")
         async with self.page.expect_download() as download_info:
