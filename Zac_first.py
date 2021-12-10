@@ -7,6 +7,7 @@ from Module import ConnectPlaywright
 from playwright.async_api import async_playwright
 
 async def main():
+    #ここは外部ファイルにするべきか
     USERNAME = "hisadakn"
     PASSWORD = "e-m1mark3"
     async with async_playwright() as p:
